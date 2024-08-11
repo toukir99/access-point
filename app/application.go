@@ -1,6 +1,10 @@
 package app
 
 import (
+	"access-point/config"
+	"access-point/db"
+	"access-point/web"
+	"access-point/web/utils"
 	"sync"
 )
 
@@ -15,4 +19,18 @@ func NewApplication() *Application {
 func (app *Application) Init() {
 	config.LoadConfig()
 	conf := config.GetConfig()
+	db.InitDB()
+	utils.InitValidator()
+}
+
+func (app *Application) Run() {
+	web.StartServer(&app.wg)
+}
+
+func (app *Application) Wait() {
+	app.wg.Wait()
+}
+
+func (app *Application) Cleanup() {
+	db.CloseDB()
 }

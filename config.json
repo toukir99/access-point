@@ -1,0 +1,26 @@
+{
+    "mode" : "debug",
+    "service_name": "access-point",
+    "http_port": 5000,
+    "db": {
+        "read": {
+            "host": "127.0.0.1",
+            "port": 5432,
+            "name": "access-point-db",
+            "user": "access-point",
+            "pass": "access-point",
+            "max_idle_time_in_minute": 60,
+            "enable_ssl_mode": false
+        },
+        "write": {
+            "host": "127.0.0.1",
+            "port": 5432,
+            "name": "access-point-db",
+            "user": "access-point",
+            "pass": "access-point",
+            "max_idle_time_in_minute": 60,
+            "enable_ssl_mode": false
+        }
+    },
+    "migrations": "migrations"
+}
