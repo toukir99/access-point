@@ -18,7 +18,7 @@ func NewApplication() *Application {
 
 func (app *Application) Init() {
 	config.LoadConfig()
-	conf := config.GetConfig()
+	config.GetConfig()
 	db.InitDB()
 	utils.InitValidator()
 }

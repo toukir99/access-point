@@ -4,7 +4,7 @@
     "http_port": 5000,
     "db": {
         "read": {
-            "host": "127.0.0.1",
+            "host": "localhost",
             "port": 5432,
             "name": "access-point-db",
             "user": "access-point",
@@ -13,7 +13,7 @@
             "enable_ssl_mode": false
         },
         "write": {
-            "host": "127.0.0.1",
+            "host": "localhost",
             "port": 5432,
             "name": "access-point-db",
             "user": "access-point",

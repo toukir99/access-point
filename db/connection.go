@@ -12,11 +12,11 @@ import (
 )
 
 var (
-    readDb  *sqlx.DB
-    writeDb *sqlx.DB
+	readDb  *sqlx.DB
+	WriteDb *sqlx.DB
 )
 
-func connect(dbConfig config.DBConfig) *sqlx.DB{
+func connect(dbConfig config.DBConfig) *sqlx.DB {
 	dbSource := fmt.Sprintf(
 		"user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
 		dbConfig.User,
@@ -31,7 +31,7 @@ func connect(dbConfig config.DBConfig) *sqlx.DB{
 	}
 
 	dbCon, err := sqlx.Connect("postgres", dbSource)
-	if err !=nil {
+	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
@@ -45,11 +45,15 @@ func connect(dbConfig config.DBConfig) *sqlx.DB{
 
 func ConnectDB() {
 	conf := config.GetConfig()
-	readDb = connect(conf.DB.Read)
-	slog.Info("Conncted to read database!")
+	readDb = connect(conf.DB.Read) //readDb.Exec("serfojj")
+	if readDb != nil {
+		slog.Info("Connected to read database!")
+	}
 
-	writeDb = connect(conf.DB.Write)
-	slog.Info("Connected to write database!")
+	WriteDb = connect(conf.DB.Write)
+	if WriteDb != nil {
+		slog.Info("Connected to write database!")
+	}
 }
 
 func CloseDB() {
@@ -58,8 +62,16 @@ func CloseDB() {
 	}
 	slog.Info("Disconnected from read database!")
 
-	if err := writeDb.Close(); err != nil {
+	if err := WriteDb.Close(); err != nil {
 		slog.Error(err.Error())
 	}
 	slog.Info("Disconnected from write database!")
+}
+
+func GetWriteDB() *sqlx.DB {
+	return WriteDb
+}
+
+func GetReadDB() *sqlx.DB {
+	return readDb
 }
