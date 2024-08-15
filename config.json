@@ -2,6 +2,7 @@
     "mode" : "debug",
     "service_name": "access-point",
     "http_port": 5000,
+    "jwt_secret": "H656H6KH56K46KK4644654Y65YI6Y5Y",
     "db": {
         "read": {
             "host": "localhost",
@@ -21,6 +22,5 @@
             "max_idle_time_in_minute": 60,
             "enable_ssl_mode": false
         }
-    },
-    "migrations": "migrations"
+    }
 }

@@ -11,8 +11,8 @@ type DBConfig struct {
 }
 
 type DB struct {
-	Read DBConfig  `json:"read"  validate: "required"`
-	Write DBConfig `json:"write" validate: "required"`
+	Read DBConfig  `json:"read"  validate:"required"`
+	Write DBConfig `json:"write" validate:"required"`
 }
 
 type Mode string
@@ -21,11 +21,11 @@ const DebugMode = Mode("debug")
 const ReleasMode = Mode("release")
 
 type Config struct {
-	Mode              Mode    `json:"mode"           validate: "required"`
-	ServiceName       string  `json:"service_name"   validate: "required"`
-	MigrationSource   string  `json:"migrations"     validate:"required"`
-	HttpPort          int     `json:"http_port"      validate: "required"`
-	DB                DB      `json:"db"             validate: "required"`
+	Mode              Mode    `json:"mode"           validate:"required"`
+	ServiceName       string  `json:"service_name"   validate:"required"`
+	JwtSecret         string  `json:"jwt_secret"     validate:"required"`
+	HttpPort          int     `json:"http_port"      validate:"required"`
+	DB                DB      `json:"db"             validate:"required"`
 }
 
 var config *Config 

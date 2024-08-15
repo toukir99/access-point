@@ -1,14 +1,48 @@
 package model
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type User struct {
-	Username string `json:"username" validate:"required"`
+	ID int `json:"id"`
+	Username string `json:"username"`
 	Email string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password"`
 }
 
-func (u *User)HashPassword() {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	u.Password = string(hashedPassword)
+type Claims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
 }
+
+type UserResponse struct {
+    ID       int    `json:"id"`
+    Username string `json:"username"`
+    Email    string `json:"email"`
+}
+
+type UpdateInfo struct {
+    Username string `json:"username"`
+    Password   string `json:"email"`
+}
+
+func (u *User)HashPassword() error{
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err 
+	}
+	u.Password = string(hashedPassword)
+	return nil
+}
+
+func (u *User) CheckPassword(password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	if err != nil {
+		return err 
+	}
+	return nil 
+}
+
+
