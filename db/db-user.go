@@ -14,7 +14,7 @@ type UserRepo struct {
 
 var userRepo *UserRepo 
 
-func init() {
+func InitUserRepo() {
 	userRepo = &UserRepo{
 		table: "users",
 	}

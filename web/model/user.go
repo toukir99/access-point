@@ -28,6 +28,11 @@ type UpdateInfo struct {
     Password   string `json:"email"`
 }
 
+type OTPRequest struct {
+	Email    string `json:"email"`
+	OTP  string `json:"otp"`
+}
+
 func (u *User)HashPassword() error{
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {

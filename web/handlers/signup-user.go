@@ -34,8 +34,14 @@ func SignUpUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := SendEmail(user.Email); err != nil {
+		slog.Error("Error sending OTP email", "err", err)
+		http.Error(w, "User created, but failed to send OTP email", http.StatusInternalServerError)
+		return
+	}
+
 	response := map[string]interface{}{
-		"message": "User created successfully!",
+		"message": "Email has been sent. Please check your mail and verify the OTP!",
 		"user_id": newID,
 	}
 

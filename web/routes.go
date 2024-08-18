@@ -15,6 +15,12 @@ func InitRoutes(mux *http.ServeMux, manager *middlewares.Manager) {
 		),
 	)
 	mux.Handle(
+		"POST /users/verify-otp", 
+		manager.With(
+			http.HandlerFunc(handlers.VerifyOTP),
+		),
+	)
+	mux.Handle(
 		"POST /users/signin", 
 		manager.With(
 			http.HandlerFunc(handlers.SignInUser),
