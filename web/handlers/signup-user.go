@@ -27,7 +27,7 @@ func SignUpUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newID, err := db.GetUserRepo().CreateUser(&user)
+	userId, err := db.GetUserRepo().CreateUser(&user)
 	if err != nil {
 		slog.Error("Error creating user", "err", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -35,19 +35,13 @@ func SignUpUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := SendEmail(user.Email); err != nil {
-		slog.Error("Error sending OTP email", "err", err)
-		http.Error(w, "User created, but failed to send OTP email", http.StatusInternalServerError)
+		utils.SendError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
 
-	response := map[string]interface{}{
-		"message": "Email has been sent. Please check your mail and verify the OTP!",
-		"user_id": newID,
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		slog.Error("Error encoding response", "err", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-	}
+	// response := map[string]interface{}{
+	// 	"message": "Email has been sent. Please check your mail and verify the OTP!",
+	// 	"user_id": userId,
+	// }
+	utils.SendData(w, userId)
 }

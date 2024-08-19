@@ -39,6 +39,11 @@ func VerifyOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := db.GetUserRepo().ActivateUserByEmail(user.Email); err != nil {
+		http.Error(w, fmt.Sprintf("Error updating user status: %v", err), http.StatusInternalServerError)
+		return
+	}
+
 	_, err = db.GetRedisClient().Del(context.Background(), otpKey).Result()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error deleting OTP: %v", err), http.StatusInternalServerError)
@@ -46,5 +51,5 @@ func VerifyOTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("OTP is verified successfully"))
+	w.Write([]byte("OTP is verified successfully and you have registered successfully!"))
 }

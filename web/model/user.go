@@ -10,6 +10,7 @@ type User struct {
 	Username string `json:"username"`
 	Email string `json:"email" validate:"required"`
 	Password string `json:"password"`
+	IsActive bool `json:"is_active"`
 }
 
 type Claims struct {
@@ -29,8 +30,8 @@ type UpdateInfo struct {
 }
 
 type OTPRequest struct {
-	Email    string `json:"email"`
-	OTP  string `json:"otp"`
+	Email    string `json:"email" validate:"required"`
+	OTP  string `json:"otp" validate:"required"`
 }
 
 func (u *User)HashPassword() error{

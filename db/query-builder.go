@@ -22,9 +22,9 @@ func createTables(writeDb *sqlx.DB) {
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    auth_token TEXT,  
+    is_active BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    );`
+	);`
 
 	_, err := writeDb.Exec(query)
 	if err != nil {

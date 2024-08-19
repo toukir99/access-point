@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log/slog"
 
+	"github.com/Masterminds/squirrel"
 	sq "github.com/Masterminds/squirrel"
 )
 
@@ -27,8 +28,8 @@ func GetUserRepo() *UserRepo{
 func (r *UserRepo) CreateUser(user *model.User) (int, error) {
 	query, args, err := GetQueryBuilder().
 		Insert(r.table).
-		Columns("username", "email", "password").
-		Values(user.Username, user.Email, user.Password).
+		Columns("username", "email", "password", "is_active").
+		Values(user.Username, user.Email, user.Password, user.IsActive).
 		Suffix("RETURNING id").
 		ToSql()
 	if err != nil {
@@ -44,6 +45,26 @@ func (r *UserRepo) CreateUser(user *model.User) (int, error) {
 	}
 
 	return newID, nil
+}
+
+func (r *UserRepo) ActivateUserByEmail(email string) error{
+	query, args, err := GetQueryBuilder().
+		Update(r.table).
+		Set("is_active", true).
+		Where(sq.Eq{"email": email}).
+		ToSql()
+	if err != nil {
+		slog.Error("Failed to create user update!")
+		return err
+	}
+
+	_, err = GetWriteDB().Exec(query, args...)
+	if err != nil {
+		slog.Error("Error activating user", "error", err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (r *UserRepo) GetUserByEmail(email string) (*model.User, error) {
@@ -70,12 +91,27 @@ func (r *UserRepo) GetUserByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepo) GetAllUsers() ([]*model.UserResponse, error) {
-	query, args, err := GetQueryBuilder().
+func (r *UserRepo) GetAllUsers(params model.PaginationParams) ([]*model.UserResponse, error) {
+	queryBuilder := GetQueryBuilder().
 		Select("id", "username", "email").
-		From(r.table).
-		OrderBy("id ASC").
-		ToSql()
+		From(r.table)
+
+	if params.Search != "" {
+		queryBuilder = queryBuilder.Where(squirrel.Like{"username": "%" + params.Search + "%"})
+	}
+
+	queryBuilder = queryBuilder.OrderBy(params.SortBy + " " + params.SortOrder)
+
+	if params.Limit > 0 {
+		queryBuilder = queryBuilder.Limit(uint64(params.Limit))
+	}
+
+	if params.Page > 0 {
+		offset := (params.Page - 1) * params.Limit
+		queryBuilder = queryBuilder.Offset(uint64(offset))
+	}
+
+	query, args, err := queryBuilder.ToSql()
 	if err != nil {
 		slog.Error("Failed to create get all users query", "err", err)
 		return nil, err
@@ -90,7 +126,6 @@ func (r *UserRepo) GetAllUsers() ([]*model.UserResponse, error) {
 
 	return users, nil
 }
-
 
 func (r *UserRepo) GetUserByID(id int) (*model.UserResponse, error) {
 	query, args, err := GetQueryBuilder().

@@ -2,13 +2,17 @@ package handlers
 
 import (
 	"access-point/db"
+	"access-point/web/utils"
 	"encoding/json"
 	"log/slog"
 	"net/http"
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := db.GetUserRepo().GetAllUsers()
+	defaultSortBy    := "username"
+	defaultSortOrder := "desc"
+	paginationParams := utils.GetPaginationParams(r, defaultSortBy, defaultSortOrder)
+	users, err := db.GetUserRepo().GetAllUsers(paginationParams)
 	if err != nil {
 		slog.Error("Error fetching users", "err", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
