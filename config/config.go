@@ -23,6 +23,7 @@ const ReleasMode = Mode("release")
 type Config struct {
 	Mode              Mode    `json:"mode"           validate:"required"`
 	ServiceName       string  `json:"service_name"   validate:"required"`
+	MigrationSource   string         `json:"migrations"                 validate:"required"`
 	JwtSecret         string  `json:"jwt_secret"     validate:"required"`
 	HttpPort          int     `json:"http_port"      validate:"required"`
 	DB                DB      `json:"db"             validate:"required"`

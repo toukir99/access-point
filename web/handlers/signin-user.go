@@ -57,10 +57,6 @@ func SignInUser(w http.ResponseWriter, r *http.Request) {
 		"user_id": user.ID,
 		"token":   tokenString,
 	}
-
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		slog.Error("Error encoding response", "err", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-	}
+	utils.SendData(w, response)
+	
 }

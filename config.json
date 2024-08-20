@@ -22,5 +22,6 @@
             "max_idle_time_in_minute": 60,
             "enable_ssl_mode": false
         }
-    }
+    },
+    "migrations": "migrations"
 }

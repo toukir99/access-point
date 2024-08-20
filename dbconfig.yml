@@ -1,0 +1,3 @@
+development:
+  dialect: postgres
+  datasource: user=access-point password=access-point host=localhost port=5432 dbname=access-point-db sslmode=disable
