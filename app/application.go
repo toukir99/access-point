@@ -20,6 +20,7 @@ func (app *Application) Init() {
 	config.LoadConfig()
 	config.GetConfig()
 	db.InitDB()
+	rabbitmq.InitRabbitMQ()
 	utils.InitValidator()
 }
 
